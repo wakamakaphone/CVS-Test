@@ -3,10 +3,10 @@ pragma solidity ^0.8.13;
 
 contract Certification {
     struct Certificate {
-        string uid;
+        string grad_number;
         string candidate_name;
-        string course_name;
-        string org_name;
+        string place_of_birth;
+        string diploma_mark;
         string ipfs_hash;
     }
 
@@ -29,10 +29,10 @@ contract Certification {
 
         // Create the certificate
         Certificate memory cert = Certificate({
-            uid: _uid,
+            grad_number: _uid,
             candidate_name: _candidate_name,
-            course_name: _course_name,
-            org_name: _org_name,
+            place_of_birth: _course_name,
+            diploma_mark: _org_name,
             ipfs_hash: _ipfs_hash
         });
 
@@ -66,10 +66,10 @@ contract Certification {
 
         // Return the values from the certificate
         return (
-            cert.uid,
+            cert.grad_number,
             cert.candidate_name,
-            cert.course_name,
-            cert.org_name,
+            cert.place_of_birth,
+            cert.diploma_mark,
             cert.ipfs_hash
         );
     }

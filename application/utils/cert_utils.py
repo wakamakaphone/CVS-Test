@@ -3,7 +3,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import pdfplumber
 
-def generate_certificate(output_path, uid, candidate_name, course_name, org_name, institute_logo_path):
+def generate_certificate(output_path, grad_number, candidate_name, place_of_birth, diploma_mark, institute_logo_path):
     # Create a PDF document
     doc = SimpleDocTemplate(output_path, pagesize=letter)
 
@@ -23,7 +23,7 @@ def generate_certificate(output_path, uid, candidate_name, course_name, org_name
         fontSize=15,
         spaceAfter=40,
     )
-    institute = Paragraph(org_name, institute_style)
+    institute = Paragraph(diploma_mark, institute_style)
     elements.extend([institute, Spacer(1, 12)])
 
     # Add title
@@ -50,9 +50,9 @@ def generate_certificate(output_path, uid, candidate_name, course_name, org_name
     recipient_text = f"This is to certify that<br/><br/>\
                      <font color='red'> {candidate_name} </font><br/>\
                      with UID <br/> \
-                    <font color='red'> {uid} </font> <br/><br/>\
+                    <font color='red'> {grad_number} </font> <br/><br/>\
                      has successfully completed the course:<br/>\
-                     <font color='blue'> {course_name} </font>"
+                     <font color='blue'> {place_of_birth} </font>"
 
     recipient = Paragraph(recipient_text, recipient_style)
     elements.extend([recipient, Spacer(1, 12)])
@@ -71,10 +71,10 @@ def extract_certificate(pdf_path):
             text += page.extract_text()
         lines = text.splitlines()
 
-        org_name = lines[0]
+        diploma_mark = lines[0]
         candidate_name = lines[3]
-        uid = lines[5]
-        course_name = lines[-1]
+        grad_number = lines[5]
+        place_of_birth = lines[-1]
 
-        return (uid, candidate_name, course_name, org_name)
+        return (grad_number, candidate_name, place_of_birth, diploma_mark)
     

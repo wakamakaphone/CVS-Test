@@ -4,7 +4,6 @@ import requests
 import os
 from connection import contract
 
-
 def displayPDF(file):
     # Opening file from file path
     with open(file, "rb") as f:
@@ -15,7 +14,6 @@ def displayPDF(file):
 
     # Displaying File
     st.markdown(pdf_display, unsafe_allow_html=True)
-
 
 def view_certificate(certificate_id):
     # Smart Contract Call
@@ -30,37 +28,54 @@ def view_certificate(certificate_id):
     displayPDF("temp.pdf")
     os.remove("temp.pdf")
 
-
 def hide_icons():
     hide_st_style = """
 				<style>
 				#MainMenu {visibility: hidden;}
 				footer {visibility: hidden;}
+                .reportview-container {
+                margin-top: -2em;}
+                #MainMenu {visibility: hidden;}
+                .stDeployButton {display:none;}
+                footer {visibility: hidden;}
+                #stDecoration {display:none;}
 				</style>"""
     st.markdown(hide_st_style, unsafe_allow_html=True)
-
 
 def hide_sidebar():
     no_sidebar_style = """
     			<style>
         		div[data-testid="stSidebarNav"] {visibility: hidden;}
-    			</style>"""
+    			
+                [data-testid="collapsedControl"] {
+                    display: none}
+                </style>"""
     st.markdown(no_sidebar_style, unsafe_allow_html=True)
-
 
 def remove_whitespaces():
     st.markdown("""
         <style>
-               .css-18e3th9 {
+           .block-container {
                     padding-top: 0rem;
-                    padding-bottom: 10rem;
+                    padding-bottom: 0rem;
                     padding-left: 5rem;
                     padding-right: 5rem;
                 }
-               .css-1d391kg {
-                    padding-top: 3.5rem;
-                    padding-right: 1rem;
-                    padding-bottom: 3.5rem;
-                    padding-left: 1rem;
-                }
         </style>""", unsafe_allow_html=True)
+    
+def remove_fullscreen_button():
+    st.markdown("""
+    <style>
+        button[title="View fullscreen"]{
+        visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
+def button_styler():
+    m = st.markdown("""
+<style>
+div.stButton > button:first-child {
+    background-color: #962F34;color:white;font-size:25px;height:2em;width:17em;border-radius:10px 10px 10px 10px;
+    
+}
+</style>""", unsafe_allow_html=True)
