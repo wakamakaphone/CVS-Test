@@ -59,14 +59,7 @@ div.stButton > button:first-child {
 </style>""", unsafe_allow_html=True)
 
 
-
-
-#tittles
-#st.title("Σύστημα πιστοποίησης διπλωμάτων Πανεπιστημίου Πατρών")
-#st.subheader("Select your role")
-
-########################
-#add university banner
+#University banner & Page Title
 institute_banner = Image.open("../assets/institute_banner.png")
 
 col1, col2 = st.columns([1, 2])
@@ -74,9 +67,6 @@ with col1:
     st.image(institute_banner, output_format="png", width=550)
 with col2:
     st.title("Σύστημα πιστοποίησης διπλωμάτων Πανεπιστημίου Πατρών")
-    
-
-########################
     
 #Verify & Generate certificates buttons
 col1, col2 = st.columns([1, 2])
