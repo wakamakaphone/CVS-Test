@@ -1,7 +1,7 @@
 version: '3'
 services:
   ganache:
-    image: sahil1810/cvs-ganache
+    image: stratos/cvs-ganache
     build:
       context: .
       dockerfile: Dockerfile.ganache
@@ -11,7 +11,7 @@ services:
       - blockchain_data:/app
 
   streamlit-app:
-    image: sahil1810/cvs-streamlitapp
+    image: stratos/cvs-streamlitapp
     build:
       context: .
       dockerfile: Dockerfile.streamlit
