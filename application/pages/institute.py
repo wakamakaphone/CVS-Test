@@ -1,14 +1,13 @@
 import streamlit as st
 import requests
 import json
-from PIL import Image
 import os
 from dotenv import load_dotenv
 import hashlib
 from utils.cert_utils import generate_certificate
 from utils.streamlit_utils import view_certificate
 from connection import contract, w3
-from utils.streamlit_utils import displayPDF, hide_icons, hide_sidebar, remove_whitespaces, remove_fullscreen_button, button_styler
+from utils.streamlit_utils import hide_icons, hide_sidebar, remove_whitespaces, remove_fullscreen_button, button_styler
 ############################################################
 
 #page config
@@ -62,37 +61,44 @@ selected = st.selectbox("", options, label_visibility="hidden")
 
 #Applies options: Generate
 if selected == options[0]:
+    # Input instructions for user:
+    st.write("Εισάγετε τα παρακάτω με Κεφαλαίους Λατινικούς Χαρακτήρες")
     # forn wating for user input
     form = st.form("Generate-Certificate", clear_on_submit=True)
-    candidate_name = form.text_input(label="Ονοματεπώνυμο και Πατρώνυμο (πχ: ΣΤΡΑΤΟΣ ΛΑΪΝΑΣ ΤΟΥ ΑΛΕΞΑΝΔΡΟΥ)")
+    candidate_name = form.text_input(label="Ονοματεπώνυμο και Πατρώνυμο (πχ: Ο ΣΤΡΑΤΟΣ ΛΑΪΝΑΣ ΤΟΥ ΑΛΕΞΑΝΔΡΟΥ)")
     grad_number = form.text_input(label="Αριθμός Μητρώου Διπλωματούχου")
     place_of_birth = form.text_input(label="Τόπος Γέννησης")
-    diploma_mark_num = form.number_input(label="Βαθμός", min_value=5.00, max_value=10.00)
     diploma_mark = form.text_input(label="Βαθμός (ολογράφως)")
+    diploma_mark_num = form.number_input(label="Βαθμός", min_value=5.00, max_value=10.00)
     # Submit - Button and Function
     submit = form.form_submit_button("Υποβολή")
     if submit:
-        pdf_file_path = f"certificate{grad_number}.pdf"
+        pdf_file_path = f"certificate_{grad_number}.pdf"
         institute_logo_path = "../assets/logo.jpg"
-        generate_certificate(pdf_file_path, grad_number, candidate_name, place_of_birth, diploma_mark, institute_logo_path)
+        institute_signatures_path = "../assets/ece_signatures.png"
+        generate_certificate(pdf_file_path, candidate_name, grad_number, place_of_birth, diploma_mark, diploma_mark_num, institute_logo_path, institute_signatures_path)
+
 
         # Upload the PDF to Pinata
         ipfs_hash = upload_to_pinata(pdf_file_path, api_key, api_secret)
         os.remove(pdf_file_path)
-        data_to_hash = f"{grad_number}{candidate_name}{place_of_birth}{diploma_mark}".encode('utf-8')
+        data_to_hash = f"{candidate_name}{grad_number}{place_of_birth}{diploma_mark}".encode('utf-8')
         certificate_id = hashlib.sha256(data_to_hash).hexdigest()
 
         # Smart Contract Call
-        contract.functions.generateCertificate(certificate_id, grad_number, candidate_name, place_of_birth, diploma_mark, ipfs_hash).transact({'from': w3.eth.accounts[0]})
-        st.success(f"Certificate successfully generated with Certificate ID: {certificate_id}")
+        contract.functions.generateCertificate(certificate_id, candidate_name, grad_number, place_of_birth, diploma_mark, ipfs_hash).transact({'from': w3.eth.accounts[0]})
+        st.success(f"Το Δίπλωμα δημιουργήθηκε με επιτυχία με ID Πιστοποιητικού: {certificate_id}")
+
+        # Show generated certificate under form
+        view_certificate(certificate_id)
+        
 
 else:
     form = st.form("View-Certificate")
-    certificate_id = form.text_input("Enter the Certificate ID")
-    submit = form.form_submit_button("Submit")
+    certificate_id = form.text_input("Εισάγετε ID Πιστοποιητικού")
+    submit = form.form_submit_button("Υποβολή")
     if submit:
         try:
             view_certificate(certificate_id)
         except Exception as e:
-            st.error("Invalid Certificate ID!")
-        
+            st.error("Μη έγκυρο ID Πιστοποιητικού!")
