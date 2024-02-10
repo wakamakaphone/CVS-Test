@@ -1,5 +1,0 @@
-FROM python:3.9.10
-WORKDIR C:\Users\Stratos\Desktop\01ECE\0__Thesis\Code\CVS-Test\application
-# RUN pip install -r requirements.txt
-EXPOSE 8501
-CMD ["streamlit", "run", "app.py"]
